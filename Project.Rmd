@@ -1,0 +1,122 @@
+---
+title: "Cousera Machine Learning Project"
+author: "Priyanka Roy"
+date: "May 18, 2017"
+output: html_document
+---
+## Assignemnt Writeup
+###Background
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset).
+
+###Data
+
+The training data for this project are available here: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv
+
+The test data are available here: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
+
+The data for this project come from this source: http://groupware.les.inf.puc-rio.br/har. If you use the document you create for this class for any purpose please cite them as they have been very generous in allowing their data to be used for this kind of assignment.
+
+###Goal
+
+The goal of this project is to predict the manner in which they did the exercise. This is the "classe" variable in the training set. 
+
+###Load all the required libraries
+```{r}
+library(caret)
+library(randomForest)
+library(rpart)
+library(rpart.plot)
+library(rattle)
+```
+
+### Loading the data sets
+```{r}
+Data_train <- read.csv("D:/Priyanka/Coursera/8.MachineLearning/pml-training.csv")
+Data_test <- read.csv("D:/Priyanka/Coursera/8.MachineLearning/pml-testing.csv")
+```
+
+Partion the training into two parts 
+```{r, , echo=TRUE, cache= TRUE}
+inTrain <- createDataPartition(Data_train$classe, p=0.7, list = FALSE)
+TrainSet <- Data_train[inTrain,]
+TestSet <- Data_train[-inTrain,]
+dim(TrainSet)
+dim(TestSet)
+```
+
+### Cleaning the data sets
+
+Remove the varibles which have negligible variability 
+```{r}
+nzv <- nearZeroVar(TrainSet)
+TrainSet <- TrainSet[,-nzv]
+TestSet <- TestSet[,-nzv]
+dim(TrainSet)
+dim(TestSet)
+```
+
+Remove the variables which has NA for more than 95% of the observations
+```{r}
+AllNA <- sapply(TrainSet, function(x) mean(is.na(x))) > 0.95
+TrainSet <- TrainSet[, AllNA == FALSE]
+TestSet <- TestSet[,AllNA == FALSE]
+dim(TrainSet)
+dim(TestSet)
+```
+
+Remove the varibles which behaves as an identifier only
+```{r}
+TrainSet <- TrainSet[,-(1:4)]
+TestSet <- TestSet[,-(1:4)]
+dim(TrainSet)
+dim(TestSet)
+```
+
+### Modelling starts
+
+#### Random Forest
+```{r, echo=TRUE, cache= TRUE}
+ControlRF <- trainControl(method = "cv", number = 3)
+m_rf <- train(classe ~., data = TrainSet, method = "rf", trControl = ControlRF)
+m_rf$finalModel
+
+pred_rf <- predict(m_rf, TestSet)
+conf_mat_rf <- confusionMatrix(pred_rf, TestSet$classe)
+conf_mat_rf
+```
+
+#### Decision Tree
+```{r, echo=TRUE, cache= TRUE}
+m_dt <- rpart(classe ~., data = TrainSet, method = "class")
+fancyRpartPlot(m_dt)
+
+pred_dt <- predict(m_dt, TestSet, type ="class")
+conf_mat_dt <- confusionMatrix(pred_dt, TestSet$classe)
+conf_mat_dt
+```
+
+#### Gradient Boosting Modelling
+```{r, echo=TRUE, cache= TRUE}
+ControlGBM <- trainControl(method = "repeatedcv", number = 5, repeats = 2)
+m_gbm <- train(classe ~., data = TrainSet, method = "gbm", trControl = ControlGBM)
+m_gbm$finalModel
+
+pred_gbm <- predict(m_gbm, TestSet)
+conf_mat_gbm <- confusionMatrix(pred_gbm, TestSet$classe)
+conf_mat_gbm
+```
+
+###Model Accuracy Comparison and Predicting using Test Data set
+The accuracies for all the above models are :
+Random Forest: 99.6%
+Decision Tree : 76.3%
+GBM : 98.6%
+
+Hence randome forest comes out to be the most efficient model.
+
+Using randome forest model, predicting the test data.
+```{r}
+Pred_test <- predict(m_rf, Data_test)
+Pred_test
+```
+
