@@ -1,279 +1,139 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+---
+title: "Cousera Machine Learning Project"
+author: "Priyanka Roy"
+date: "May 18, 2017"
+output: html_document
+---
+## Assignemnt Writeup
+###Background
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset).
 
-<title>Assignemnt Writeup</title>
+###Data
 
-<script type="text/javascript">
-window.onload = function() {
-  var imgs = document.getElementsByTagName('img'), i, img;
-  for (i = 0; i < imgs.length; i++) {
-    img = imgs[i];
-    // center an image if it is the only element of its parent
-    if (img.parentElement.childElementCount === 1)
-      img.parentElement.style.textAlign = 'center';
-  }
-};
-</script>
+The training data for this project are available here: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv
 
+The test data are available here: https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
 
+The data for this project come from this source: http://groupware.les.inf.puc-rio.br/har. If you use the document you create for this class for any purpose please cite them as they have been very generous in allowing their data to be used for this kind of assignment.
 
+###Goal
 
+The goal of this project is to predict the manner in which they did the exercise. This is the "classe" variable in the training set. 
 
-<style type="text/css">
-body, td {
-   font-family: sans-serif;
-   background-color: white;
-   font-size: 13px;
-}
+###Load all the required libraries
 
-body {
-  max-width: 800px;
-  margin: auto;
-  padding: 1em;
-  line-height: 20px;
-}
-
-tt, code, pre {
-   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-}
-
-h1 {
-   font-size:2.2em;
-}
-
-h2 {
-   font-size:1.8em;
-}
-
-h3 {
-   font-size:1.4em;
-}
-
-h4 {
-   font-size:1.0em;
-}
-
-h5 {
-   font-size:0.9em;
-}
-
-h6 {
-   font-size:0.8em;
-}
-
-a:visited {
-   color: rgb(50%, 0%, 50%);
-}
-
-pre, img {
-  max-width: 100%;
-}
-pre {
-  overflow-x: auto;
-}
-pre code {
-   display: block; padding: 0.5em;
-}
-
-code {
-  font-size: 92%;
-  border: 1px solid #ccc;
-}
-
-code[class] {
-  background-color: #F8F8F8;
-}
-
-table, td, th {
-  border: none;
-}
-
-blockquote {
-   color:#666666;
-   margin:0;
-   padding-left: 1em;
-   border-left: 0.5em #EEE solid;
-}
-
-hr {
-   height: 0px;
-   border-bottom: none;
-   border-top-width: thin;
-   border-top-style: dotted;
-   border-top-color: #999999;
-}
-
-@media print {
-   * {
-      background: transparent !important;
-      color: black !important;
-      filter:none !important;
-      -ms-filter: none !important;
-   }
-
-   body {
-      font-size:12pt;
-      max-width:100%;
-   }
-
-   a, a:visited {
-      text-decoration: underline;
-   }
-
-   hr {
-      visibility: hidden;
-      page-break-before: always;
-   }
-
-   pre, blockquote {
-      padding-right: 1em;
-      page-break-inside: avoid;
-   }
-
-   tr, img {
-      page-break-inside: avoid;
-   }
-
-   img {
-      max-width: 100% !important;
-   }
-
-   @page :left {
-      margin: 15mm 20mm 15mm 10mm;
-   }
-
-   @page :right {
-      margin: 15mm 10mm 15mm 20mm;
-   }
-
-   p, h2, h3 {
-      orphans: 3; widows: 3;
-   }
-
-   h2, h3 {
-      page-break-after: avoid;
-   }
-}
-</style>
-
-
-
-</head>
-
-<body>
-<h2>Assignemnt Writeup</h2>
-
-<p>###Background
-Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a> (see the section on the Weight Lifting Exercise Dataset).</p>
-
-<p>###Data</p>
-
-<p>The training data for this project are available here: <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv</a></p>
-
-<p>The test data are available here: <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv">https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv</a></p>
-
-<p>The data for this project come from this source: <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a>. If you use the document you create for this class for any purpose please cite them as they have been very generous in allowing their data to be used for this kind of assignment.</p>
-
-<p>###Goal</p>
-
-<p>The goal of this project is to predict the manner in which they did the exercise. This is the &quot;classe&quot; variable in the training set. </p>
-
-<p>###Load all the required libraries</p>
-
-<pre><code class="r">library(caret)
+```r
+library(caret)
 library(randomForest)
 library(rpart)
 library(rpart.plot)
 library(rattle)
-</code></pre>
+```
 
-<h3>Loading the data sets</h3>
+### Loading the data sets
 
-<pre><code class="r">Data_train &lt;- read.csv(&quot;D:/Priyanka/Coursera/8.MachineLearning/pml-training.csv&quot;)
-Data_test &lt;- read.csv(&quot;D:/Priyanka/Coursera/8.MachineLearning/pml-testing.csv&quot;)
-</code></pre>
+```r
+Data_train <- read.csv("D:/Priyanka/Coursera/8.MachineLearning/pml-training.csv")
+Data_test <- read.csv("D:/Priyanka/Coursera/8.MachineLearning/pml-testing.csv")
+```
 
-<p>Partion the training into two parts </p>
+Partion the training into two parts 
 
-<pre><code class="r">inTrain &lt;- createDataPartition(Data_train$classe, p=0.7, list = FALSE)
-TrainSet &lt;- Data_train[inTrain,]
-TestSet &lt;- Data_train[-inTrain,]
+```r
+inTrain <- createDataPartition(Data_train$classe, p=0.7, list = FALSE)
+TrainSet <- Data_train[inTrain,]
+TestSet <- Data_train[-inTrain,]
 dim(TrainSet)
-</code></pre>
+```
 
-<pre><code>## [1] 13737   159
-</code></pre>
+```
+## [1] 13737   159
+```
 
-<pre><code class="r">dim(TestSet)
-</code></pre>
+```r
+dim(TestSet)
+```
 
-<pre><code>## [1] 5885  159
-</code></pre>
+```
+## [1] 5885  159
+```
 
-<h3>Cleaning the data sets</h3>
+### Cleaning the data sets
 
-<p>Remove the varibles which have negligible variability </p>
+Remove the varibles which have negligible variability 
 
-<pre><code class="r">nzv &lt;- nearZeroVar(TrainSet)
-TrainSet &lt;- TrainSet[,-nzv]
-TestSet &lt;- TestSet[,-nzv]
+```r
+nzv <- nearZeroVar(TrainSet)
+TrainSet <- TrainSet[,-nzv]
+TestSet <- TestSet[,-nzv]
 dim(TrainSet)
-</code></pre>
+```
 
-<pre><code>## [1] 13737   104
-</code></pre>
+```
+## [1] 13737   104
+```
 
-<pre><code class="r">dim(TestSet)
-</code></pre>
+```r
+dim(TestSet)
+```
 
-<pre><code>## [1] 5885  104
-</code></pre>
+```
+## [1] 5885  104
+```
 
-<p>Remove the variables which has NA for more than 95% of the observations</p>
+Remove the variables which has NA for more than 95% of the observations
 
-<pre><code class="r">AllNA &lt;- sapply(TrainSet, function(x) mean(is.na(x))) &gt; 0.95
-TrainSet &lt;- TrainSet[, AllNA == FALSE]
-TestSet &lt;- TestSet[,AllNA == FALSE]
+```r
+AllNA <- sapply(TrainSet, function(x) mean(is.na(x))) > 0.95
+TrainSet <- TrainSet[, AllNA == FALSE]
+TestSet <- TestSet[,AllNA == FALSE]
 dim(TrainSet)
-</code></pre>
+```
 
-<pre><code>## [1] 13737    58
-</code></pre>
+```
+## [1] 13737    58
+```
 
-<pre><code class="r">dim(TestSet)
-</code></pre>
+```r
+dim(TestSet)
+```
 
-<pre><code>## [1] 5885   58
-</code></pre>
+```
+## [1] 5885   58
+```
 
-<p>Remove the varibles which behaves as an identifier only</p>
+Remove the varibles which behaves as an identifier only
 
-<pre><code class="r">TrainSet &lt;- TrainSet[,-(1:4)]
-TestSet &lt;- TestSet[,-(1:4)]
+```r
+TrainSet <- TrainSet[,-(1:4)]
+TestSet <- TestSet[,-(1:4)]
 dim(TrainSet)
-</code></pre>
+```
 
-<pre><code>## [1] 13737    54
-</code></pre>
+```
+## [1] 13737    54
+```
 
-<pre><code class="r">dim(TestSet)
-</code></pre>
+```r
+dim(TestSet)
+```
 
-<pre><code>## [1] 5885   54
-</code></pre>
+```
+## [1] 5885   54
+```
 
-<h3>Modelling starts</h3>
+### Modelling starts
 
-<h4>Random Forest</h4>
+#### Random Forest
 
-<pre><code class="r">ControlRF &lt;- trainControl(method = &quot;cv&quot;, number = 3)
-m_rf &lt;- train(classe ~., data = TrainSet, method = &quot;rf&quot;, trControl = ControlRF)
+```r
+ControlRF <- trainControl(method = "cv", number = 3)
+m_rf <- train(classe ~., data = TrainSet, method = "rf", trControl = ControlRF)
 m_rf$finalModel
-</code></pre>
+```
 
-<pre><code>## 
+```
+## 
 ## Call:
 ##  randomForest(x = x, y = y, mtry = param$mtry) 
 ##                Type of random forest: classification
@@ -288,14 +148,16 @@ m_rf$finalModel
 ## C    0    7 2389    0    0 0.0029215359
 ## D    0    0    2 2249    1 0.0013321492
 ## E    0    1    0    4 2520 0.0019801980
-</code></pre>
+```
 
-<pre><code class="r">pred_rf &lt;- predict(m_rf, TestSet)
-conf_mat_rf &lt;- confusionMatrix(pred_rf, TestSet$classe)
+```r
+pred_rf <- predict(m_rf, TestSet)
+conf_mat_rf <- confusionMatrix(pred_rf, TestSet$classe)
 conf_mat_rf
-</code></pre>
+```
 
-<pre><code>## Confusion Matrix and Statistics
+```
+## Confusion Matrix and Statistics
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
@@ -310,10 +172,10 @@ conf_mat_rf
 ##                Accuracy : 0.9973          
 ##                  95% CI : (0.9956, 0.9984)
 ##     No Information Rate : 0.2845          
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##     P-Value [Acc > NIR] : < 2.2e-16       
 ##                                           
 ##                   Kappa : 0.9966          
-##  Mcnemar&#39;s Test P-Value : NA              
+##  Mcnemar's Test P-Value : NA              
 ## 
 ## Statistics by Class:
 ## 
@@ -326,25 +188,29 @@ conf_mat_rf
 ## Detection Rate         0.2845   0.1924   0.1740   0.1631   0.1833
 ## Detection Prevalence   0.2848   0.1927   0.1755   0.1636   0.1833
 ## Balanced Accuracy      0.9998   0.9967   0.9981   0.9976   0.9986
-</code></pre>
+```
 
-<h4>Decision Tree</h4>
+#### Decision Tree
 
-<pre><code class="r">m_dt &lt;- rpart(classe ~., data = TrainSet, method = &quot;class&quot;)
+```r
+m_dt <- rpart(classe ~., data = TrainSet, method = "class")
 fancyRpartPlot(m_dt)
-</code></pre>
+```
 
-<pre><code>## Warning: labs do not fit even at cex 0.15, there may be some overplotting
-</code></pre>
+```
+## Warning: labs do not fit even at cex 0.15, there may be some overplotting
+```
 
-<p><img src="figure/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"></p>
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
 
-<pre><code class="r">pred_dt &lt;- predict(m_dt, TestSet, type =&quot;class&quot;)
-conf_mat_dt &lt;- confusionMatrix(pred_dt, TestSet$classe)
+```r
+pred_dt <- predict(m_dt, TestSet, type ="class")
+conf_mat_dt <- confusionMatrix(pred_dt, TestSet$classe)
 conf_mat_dt
-</code></pre>
+```
 
-<pre><code>## Confusion Matrix and Statistics
+```
+## Confusion Matrix and Statistics
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
@@ -359,10 +225,10 @@ conf_mat_dt
 ##                Accuracy : 0.7373          
 ##                  95% CI : (0.7259, 0.7485)
 ##     No Information Rate : 0.2845          
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##     P-Value [Acc > NIR] : < 2.2e-16       
 ##                                           
 ##                   Kappa : 0.6647          
-##  Mcnemar&#39;s Test P-Value : &lt; 2.2e-16       
+##  Mcnemar's Test P-Value : < 2.2e-16       
 ## 
 ## Statistics by Class:
 ## 
@@ -375,15 +241,17 @@ conf_mat_dt
 ## Detection Rate         0.2639   0.1055   0.1368  0.09873   0.1324
 ## Detection Prevalence   0.3550   0.1412   0.1869  0.13679   0.1801
 ## Balanced Accuracy      0.9002   0.7505   0.8619  0.77859   0.8307
-</code></pre>
+```
 
-<h4>Gradient Boosting Modelling</h4>
+#### Gradient Boosting Modelling
 
-<pre><code class="r">ControlGBM &lt;- trainControl(method = &quot;repeatedcv&quot;, number = 5, repeats = 2)
-m_gbm &lt;- train(classe ~., data = TrainSet, method = &quot;gbm&quot;, trControl = ControlGBM)
-</code></pre>
+```r
+ControlGBM <- trainControl(method = "repeatedcv", number = 5, repeats = 2)
+m_gbm <- train(classe ~., data = TrainSet, method = "gbm", trControl = ControlGBM)
+```
 
-<pre><code>## Iter   TrainDeviance   ValidDeviance   StepSize   Improve
+```
+## Iter   TrainDeviance   ValidDeviance   StepSize   Improve
 ##      1        1.6094             nan     0.1000    0.1305
 ##      2        1.5217             nan     0.1000    0.0888
 ##      3        1.4628             nan     0.1000    0.0646
@@ -1002,22 +870,26 @@ m_gbm &lt;- train(classe ~., data = TrainSet, method = &quot;gbm&quot;, trContro
 ##    120        0.1578             nan     0.1000    0.0020
 ##    140        0.1250             nan     0.1000    0.0017
 ##    150        0.1123             nan     0.1000    0.0007
-</code></pre>
+```
 
-<pre><code class="r">m_gbm$finalModel
-</code></pre>
+```r
+m_gbm$finalModel
+```
 
-<pre><code>## A gradient boosted model with multinomial loss function.
+```
+## A gradient boosted model with multinomial loss function.
 ## 150 iterations were performed.
 ## There were 53 predictors of which 43 had non-zero influence.
-</code></pre>
+```
 
-<pre><code class="r">pred_gbm &lt;- predict(m_gbm, TestSet)
-conf_mat_gbm &lt;- confusionMatrix(pred_gbm, TestSet$classe)
+```r
+pred_gbm <- predict(m_gbm, TestSet)
+conf_mat_gbm <- confusionMatrix(pred_gbm, TestSet$classe)
 conf_mat_gbm
-</code></pre>
+```
 
-<pre><code>## Confusion Matrix and Statistics
+```
+## Confusion Matrix and Statistics
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
@@ -1032,10 +904,10 @@ conf_mat_gbm
 ##                Accuracy : 0.9886          
 ##                  95% CI : (0.9856, 0.9912)
 ##     No Information Rate : 0.2845          
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+##     P-Value [Acc > NIR] : < 2.2e-16       
 ##                                           
 ##                   Kappa : 0.9856          
-##  Mcnemar&#39;s Test P-Value : NA              
+##  Mcnemar's Test P-Value : NA              
 ## 
 ## Statistics by Class:
 ## 
@@ -1048,26 +920,25 @@ conf_mat_gbm
 ## Detection Rate         0.2839   0.1896   0.1730   0.1604   0.1816
 ## Detection Prevalence   0.2858   0.1932   0.1776   0.1618   0.1816
 ## Balanced Accuracy      0.9978   0.9877   0.9933   0.9888   0.9940
-</code></pre>
+```
 
-<p>###Model Accuracy Comparison and Predicting using Test Data set
+###Model Accuracy Comparison and Predicting using Test Data set
 The accuracies for all the above models are :
 Random Forest: 99.6%
 Decision Tree : 76.3%
-GBM : 98.6%</p>
+GBM : 98.6%
 
-<p>Hence randome forest comes out to be the most efficient model.</p>
+Hence randome forest comes out to be the most efficient model.
 
-<p>Using randome forest model, predicting the test data.</p>
+Using randome forest model, predicting the test data.
 
-<pre><code class="r">Pred_test &lt;- predict(m_rf, Data_test)
+```r
+Pred_test <- predict(m_rf, Data_test)
 Pred_test
-</code></pre>
+```
 
-<pre><code>##  [1] B A B A A E D B A A B C B A E E A B B B
+```
+##  [1] B A B A A E D B A A B C B A E E A B B B
 ## Levels: A B C D E
-</code></pre>
+```
 
-</body>
-
-</html>
